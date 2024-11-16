@@ -14,19 +14,17 @@ export function deleteDirectory(){
 
 }
 export function deleteJsonFile(callback){  
-    setTimeout(()=>{ 
-        for(let i=1;i<=1;i++){
-            const fileName = `fsDirectory/file${i}.json`; 
-            fs.unlink(fileName,(err)=>{
-                if(err){
-                    console.log(`Error deleting file ${fileName}:`, err);
-                } else {
-                    console.log(`File ${fileName} deleted successfully`);
-                }
-            })
-        } 
-        callback()
-    },1000)
+    for(let i=1;i<=1;i++){
+        const fileName = `fsDirectory/file${i}.json`; 
+        fs.unlink(fileName,(err)=>{
+            if(err){
+                console.log(`Error deleting file ${fileName}:`, err);
+            } else {
+                console.log(`File ${fileName} deleted successfully`);
+            }
+        })
+    } 
+    callback()
    
 
 }
