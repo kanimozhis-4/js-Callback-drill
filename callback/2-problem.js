@@ -69,9 +69,9 @@ export function cleanupGeneratedFiles(allFileName) {
     fs.readFile(allFileName, 'utf8', (err, data) => {
         if (err){
             return console.error('Error reading log file:', err);
-        }
+        } 
+        
         const filesToDelete = data.toString().split('\n').filter(f => f.trim());
-        let deleteCount = 0; 
         console.log(filesToDelete)
 
         filesToDelete.forEach((file) => {

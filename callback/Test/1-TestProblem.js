@@ -9,12 +9,8 @@ import {createDirectoryAndFile,createJsonFiles,deleteJsonFile,deleteDirectory} f
 let directory=`fsDirectory`
 createDirectoryAndFile(directory,()=>{
     createJsonFiles(directory,()=>{
-        createJsonFiles(directory,()=>{ 
-            deleteJsonFile(()=>{ 
-                deleteDirectory();
-
-            })
-
+        deleteJsonFile(()=>{ 
+            deleteDirectory();
         })
     });
 })
