@@ -1,99 +1,142 @@
-import { promises as fs } from 'fs';
+import fs from 'fs';
 
 export function readAndConvertToUpperCase(inputFile, outputFile, allFileName) { 
     return new Promise((resolve, reject) => {
-        fs.readFile(inputFile)
-            .then((data) => {
-                const upperCaseContent = data.toString().toUpperCase();
-                return fs.writeFile(outputFile, upperCaseContent);
-            })
-            .then(() => {
-                return fs.appendFile(allFileName, `${outputFile}\n`);
-            })
-            .then(() => {
-                console.log(`Uppercase file created: ${outputFile}`);
-                resolve();
-            })
-            .catch((err) => {
-                console.log("Error in uppercase as ", err);
+        fs.readFile(inputFile,(err,data)=>{
+            if(err){
+                console.error("Error reading file", err);
                 reject(err);
-            });
+                return;
+            } 
+            const upperCaseContent = data.toString().toUpperCase(); 
+            fs.writeFile(outputFile, upperCaseContent,(err)=>{ 
+                if(err){
+                    console.error("Error writing file", err);
+                    reject(err);
+                    return;
+                } 
+                fs.appendFile(allFileName, `${outputFile}\n`,(err)=>{
+                    if(err){
+                        console.error("Error appending to file:", err);
+                        reject(err);
+                        return;
+                    } 
+                    else{
+                        console.log(`Uppercase file created: ${outputFile}`);
+                        resolve(); 
+                        return;
+                    }
+                })
+            })
+        })
     });
 }
 
 export function convertToLowerCaseAndSplit(inputFile, outputFile, allFileName) { 
     return new Promise((resolve, reject) => {
-        fs.readFile(inputFile, 'utf8')
-            .then((data) => {
-                const sentences = data
-                    .toLowerCase()
-                    .split('.')
-                    .map((sentence) => sentence.trim())
-                    .filter((sentence) => sentence);
-                const lowerCaseContent = sentences.join('\n');
-                return fs.writeFile(outputFile, lowerCaseContent);
-            })
-            .then(() => {
-                return fs.appendFile(allFileName, `${outputFile}\n`);
-            })
-            .then(() => {
-                console.log(`Lowercase file created: ${outputFile}`);
-                resolve();
-            })
-            .catch((err) => {
-                console.log("Error in lowercase as", err);
+        fs.readFile(inputFile, 'utf8',(err,data)=>{
+            if(err){
+                console.error("Error reading file", err);
                 reject(err);
-            });
+                return;
+            } 
+            const sentences = data.toLowerCase().split('.').map((sentence) => sentence.trim()).filter((sentence) => sentence);
+            const lowerCaseContent = sentences.join('\n'); 
+            fs.writeFile(outputFile, lowerCaseContent,(err)=>{
+                if(err){
+                    console.error("Error writing file", err);
+                    reject(err);
+                    return;
+                }
+                fs.appendFile(allFileName, `${outputFile}\n`,(err)=>{
+                    if(err){
+                        console.error("Error appending to file:", err);
+                        reject(err);
+                        return;
+                    } 
+                    else{
+                        console.log(`Lowercase file created: ${outputFile}`);
+                        resolve();  
+                        return; 
+                    }
+                });
+            })
+        })
     });
 }
 
 export function sortAndWriteSentence(inputFile, outputFile,allFileName) { 
     return new Promise((resolve, reject) => {
-        fs.readFile(inputFile, 'utf8')
-            .then((data) => {
-                const sortedContent = data.toString().split('\n').sort().join('\n');
-                return fs.writeFile(outputFile, sortedContent);
-            })
-            .then(() => {
-                return fs.appendFile(allFileName, `${outputFile}\n`);
-            })
-            .then(() => {
-                console.log(`Sorted file created: ${outputFile}`);
-                resolve();
-            })
-            .catch((err) => {
-                console.log("Error in sort and write as", err);
+        fs.readFile(inputFile, 'utf8',(err,data)=>{
+            if(err){
+                console.error("Error reading file", err);
                 reject(err);
+                return;
+            }  
+            const sortedContent = data.toString().split('\n').sort().join('\n');
+            fs.writeFile(outputFile, sortedContent,(err)=>{ 
+                if(err){
+                    console.error("Error writing file", err);
+                    reject(err);
+                    return;
+                }
+                fs.appendFile(allFileName, `${outputFile}\n`,(err)=>{ 
+                    if(err){
+                        console.error("Error appending to file:", err);
+                        reject(err);
+                        return;
+                    } 
+                    else{
+                        console.log(`Sorted file created: ${outputFile}`);
+                        resolve();  
+                        return; 
+                    }
+
+                })
             });
+        })
     });
 }
 
 export function cleanupGeneratedFiles(allFileName) { 
     return new Promise((resolve, reject) => {
-        fs.readFile(allFileName, 'utf8')
-            .then((data) => {
-                const filesToDelete = data.toString().split('\n').filter((f) => f.trim());
-                let arr = [];
-                for (const file of filesToDelete) {
-                    arr.push(
-                        fs.unlink(file).then(() => {
-                            console.log(`Deleted file: ${file}`);
-                        })
-                    );
-                }
-                return Promise.all(arr);
-            })
-            .then(() => {
-                return fs.unlink(allFileName);
-            })
-            .then(() => {
-                console.log(`Cleanup completed: Deleted ${allFileName}`);
-                resolve();
-            })
-            .catch((err) => {
-                console.log("Error in cleanup data as ", err);
+        fs.readFile(allFileName, 'utf8',(err,data)=>{
+            if(err){
+                console.error("Error reading file", err);
                 reject(err);
-            });
+                return;
+            } 
+            const filesToDelete = data.toString().split('\n').filter((f) => f.trim());
+            let completed=0;
+            for (const file of filesToDelete) { 
+                fs.unlink(file,(err)=>{ 
+                    if(err){ 
+                        console.error("Error for deleting file", err);
+                        reject(err);
+                        return;
+                    }  
+                    else{
+                        console.log(`Deleted file: ${file}`); 
+                        completed++;
+                        if(completed===filesToDelete.length){ 
+                            fs.unlink(allFileName,(err)=>{
+                                if(err){ 
+                                    console.error("Error for deleting filenames.txt ", err);
+                                    reject(err);
+                                    return;
+                                } 
+                                else{
+                                    console.log(`Cleanup completed: Deleted ${allFileName}`);
+                                    resolve(); 
+                                    return;
+                                }
+                            }) 
+                           
+                        }
+                    }
+                })
+            }
+        })
     });
 } 
 

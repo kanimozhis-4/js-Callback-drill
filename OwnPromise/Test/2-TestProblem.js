@@ -9,4 +9,7 @@ readAndConvertToUpperCase('../lipsum.txt', './uppercase.txt', allFileName)
 }) 
 .then(()=>{
     return cleanupGeneratedFiles(allFileName)
-})
+}) 
+.catch((err)=>
+    console.log("error in the flow as ",err)
+)
