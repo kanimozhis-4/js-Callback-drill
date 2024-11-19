@@ -11,7 +11,7 @@ export  function deleteDirectory(){
 }
 export function deleteJsonFile(){  
     let arr=[];
-    for(let i=1;i<=1;i++){
+    for(let i=1;i<=5;i++){
         const fileName = `fsDirectory/file${i}.json`; 
         arr.push(
             fs.unlink(fileName)
@@ -29,7 +29,7 @@ export function deleteJsonFile(){
 }
 export function createJsonFiles(){  
     let arr=[];
-    for (let i = 1; i <= 1; i++) {
+    for (let i = 1; i <= 5; i++) {
         const fileName = `./fsDirectory/file${i}.json`; 
         arr.push(
             fs.writeFile(fileName,`{}`)
